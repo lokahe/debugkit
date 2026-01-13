@@ -1,7 +1,11 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    kotlin("android")
+    id("maven-publish")
 }
+
+group = "com.github.lokahe"         // JitPack group must be com.github.<user>
+version = "1.0.0"                   // Matches your tag
 
 android {
     namespace = "com.lokahe.debugkit"
@@ -44,13 +48,13 @@ dependencies {
 
 publishing {
     publications {
-        release(MavenPublication) {
-            groupId = 'com.github.lokahe'
-            artifactId = 'debugkit'
-            version = '1.0.0'
+        register<MavenPublication>("release") {
+        groupId = "com.github.lokahe"
+            artifactId = "debugkit"
+            version = "1.0.0"
 
             afterEvaluate {
-                from components.release
+                from(components["release"])
             }
         }
     }
