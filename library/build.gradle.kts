@@ -1,11 +1,8 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    id("maven-publish")
+    id("com.vanniktech.maven.publish")
 }
-
-group = "com.github.lokahe"         // JitPack group must be com.github.<user>
-version = "1.0.0"                   // Matches your tag
 
 android {
     namespace = "com.lokahe.debugkit"
@@ -46,16 +43,39 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 }
 
-publishing {
-    publications {
-        register<MavenPublication>("release") {
-        groupId = "com.github.lokahe"
-            artifactId = "debugkit"
-            version = "1.0.0"
+// Plugin configuration
+mavenPublishing {
+    // Define coordinates
+    coordinates("io.github.lokahe", "debugkit", "1.0.0")
 
-            afterEvaluate {
-                from(components["release"])
+    // Configure POM metadata
+    pom {
+        name.set("debugkit")
+        description.set("A concise description of what the library does.")
+        url.set("github.com")
+        licenses {
+            license {
+                name.set("The Apache License, Version 2.0")
+                url.set("www.apache.org")
             }
         }
+        developers {
+            developer {
+                id.set("lokahe")
+                name.set("lokahe")
+                email.set("lokahe619@gmail.com")
+            }
+        }
+        scm {
+            connection.set("scm:git:https://github.com/lokahe/debugkit.git")
+            developerConnection.set("scm:git:ssh://github.com")
+            url.set("https://github.com/lokahe/debugkit")
+        }
     }
+
+    // This handles the Maven Central Portal (Sonatype S01/S10) integration
+    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
+
+    // Enable GPG signing
+    signAllPublications()
 }
