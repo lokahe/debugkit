@@ -43,10 +43,11 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 }
 
+version = "1.0.1"
 // Plugin configuration
 mavenPublishing {
     // Define coordinates
-    coordinates("io.github.lokahe", "debugkit", "1.0.0")
+    coordinates("io.github.lokahe", "debugkit", version.toString())
 
     // Configure POM metadata
     pom {
