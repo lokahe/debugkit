@@ -20,13 +20,14 @@ private fun View.getRect(): Rect =
         getLocationOnScreen(it)
         Rect(it[0], it[1], width, height)
     }
+
 private fun View.getRectStr(): String =
     getRect().let { rect ->
-        "x:${rect.left},y:${rect.top},w:${rect.right},h:${rect.bottom})"
+        "x:${rect.left},y:${rect.top},w:${rect.right},h:${rect.bottom}"
     }
 
 private fun View.getResName(): String =
-    if (id != 0 || id != -1) resources.getResourceEntryName(id) else ""
+    if (id != 0 && id != -1) resources.getResourceEntryName(id) else ""
 
 private fun View.visibilityStr(): String =
     when (visibility) {
@@ -54,55 +55,63 @@ private fun View.layoutParamsWidthStr(): String = layoutParams?.let {
     }
 } ?: ""
 
+private fun String.fixInTab(numOfTab: Int): String =
+    this + "\t".repeat(1.coerceAtLeast(numOfTab - length / 4))
+
 class ViewHierarchyUtils {
     companion object {
+        private val TAG = ViewHierarchyUtils::class.java.simpleName
+        private val TABS = arrayOf(5, 8, 3, 2, 3, 9, 15)
+
         @JvmStatic
         @JvmOverloads
         fun readViewInfo(
             view: View?,
             prefix: String = "",
-            separator: String = "\t",
-            divider: String = "|"
+            divider: String = "",
+            tabs: Array<Int> = TABS
         ): String =
             view?.let { v ->
-                "$prefix[${v.childCount()}]" +
-                        "$separator${v.getRectStr()}" +
-                        "${divider}resId:${v.getResName()}(${v.id})" +
-                        "${divider}${v.javaClass.getName()}@${v.hashCode()}" +
-                        "${divider}${v.visibilityStr()}" +
-                        "${divider}${v.enableStr()}" +
-                        "${divider}${v.clickableStr()}" +
-                        "${divider}lp.width/height:${v.layoutParamsWidthStr()}/${v.layoutParamsHeightStr()}"
+                "$prefix[${v.childCount()}]".fixInTab(tabs[0]) +
+                        "${divider}${v.getRectStr()}".fixInTab(tabs[1]) +
+                        "${divider}${v.visibilityStr()}".fixInTab(tabs[2]) +
+                        "${divider}${v.enableStr()}".fixInTab(tabs[3]) +
+                        "${divider}${v.clickableStr()}".fixInTab(tabs[4]) +
+                        "${divider}lp.w/h:${v.layoutParamsWidthStr()}/${v.layoutParamsHeightStr()}".fixInTab(
+                            tabs[5]
+                        ) +
+                        "${divider}resId:${v.getResName()}(${v.id})".fixInTab(tabs[6]) +
+                        "${divider}${v.javaClass.getName()}@${v.hashCode()}"
             } ?: "$prefix[null]"
 
         @JvmStatic
         @JvmOverloads
         fun logViewInfo(
             view: View?,
-            tag: String = this::class.java.simpleName,
+            tag: String = TAG,
             prefix: String = "",
-            separator: String = "\t",
-            divider: String = "|"
+            divider: String = "",
+            tabs: Array<Int> = TABS
         ) {
-            Log.d(tag, readViewInfo(view, prefix, separator, divider))
+            Log.d(tag, readViewInfo(view, prefix, divider, tabs))
         }
 
         @JvmStatic
         @JvmOverloads
         fun logParents(
             view: View?,
-            tag: String = this::class.java.simpleName,
+            tag: String = TAG,
             prefix: String = "",
-            separator: String = "\t",
-            divider: String = "|"
+            divider: String = "",
+            tabs: Array<Int> = TABS
         ) {
             view?.let { v ->
-                logViewInfo(v, tag, prefix, separator, divider)
                 v.parent?.let { parent ->
                     if (parent is View) {
-                        logParents(parent, tag, "$prefix↖", separator, divider)
+                        logParents(parent, tag, "$prefix↖", divider, tabs)
                     }
                 }
+                logViewInfo(v, tag, prefix, divider, tabs)
             }
         }
 
@@ -112,14 +121,14 @@ class ViewHierarchyUtils {
             view: View?,
             hasSize: Boolean = false,
             visible: Boolean = false,
-            tag: String = this::class.java.simpleName,
+            tag: String = TAG,
             prefix: String = "",
-            separator: String = "\t",
-            divider: String = "|"
+            divider: String = "",
+            tabs: Array<Int> = TABS
         ) {
             view?.let { v ->
                 if ((!hasSize || !v.getRect().isEmpty) && (!visible || v.isVisible)) {
-                    logViewInfo(v, tag, prefix, separator, divider)
+                    logViewInfo(v, tag, prefix, divider, tabs)
                 }
                 if (v is ViewGroup) {
                     for (i in 0..v.childCount()) {
@@ -130,8 +139,8 @@ class ViewHierarchyUtils {
                             visible,
                             tag,
                             prefix + INDEX[i % INDEX.size],
-                            separator,
-                            divider
+                            divider,
+                            tabs
                         )
                     }
                 }

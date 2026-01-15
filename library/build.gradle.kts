@@ -9,7 +9,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 21
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -52,7 +52,7 @@ mavenPublishing {
     pom {
         name.set("debugkit")
         description.set("A concise description of what the library does.")
-        url.set("github.com")
+        url.set("https://github.com/lokahe/debugkit")
         licenses {
             license {
                 name.set("The Apache License, Version 2.0")
@@ -68,13 +68,13 @@ mavenPublishing {
         }
         scm {
             connection.set("scm:git:https://github.com/lokahe/debugkit.git")
-            developerConnection.set("scm:git:ssh://github.com")
-            url.set("https://github.com/lokahe/debugkit")
+            developerConnection.set("scm:git:ssh://git@github.com/lokahe/debugkit.git")
+            url.set("https://github.com/lokahe/debugkit/")
         }
     }
 
     // This handles the Maven Central Portal (Sonatype S01/S10) integration
-    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
+    publishToMavenCentral(automaticRelease = true)
 
     // Enable GPG signing
     signAllPublications()
