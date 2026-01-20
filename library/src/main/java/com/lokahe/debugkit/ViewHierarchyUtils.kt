@@ -27,7 +27,13 @@ private fun View.getRectStr(): String =
     }
 
 private fun View.getResName(): String =
-    if (id != 0 && id != -1) resources.getResourceEntryName(id) else ""
+    if (id != 0 && id != -1)
+        try {
+            resources.getResourceEntryName(id)
+        } catch (e: Exception) {
+            ""
+        }
+    else ""
 
 private fun View.visibilityStr(): String =
     when (visibility) {
