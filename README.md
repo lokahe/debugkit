@@ -2,7 +2,9 @@
 
 [![Android CI status](https://github.com/lokahe/debugkit/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/lokahe/debugkit/actions/workflows/maven.yml)
 ![](https://img.shields.io/badge/Android-21%20--%2036-green.svg)
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.lokahe/io.github.lokahe.debugkit)](https://central.sonatype.com/namespace/io.github.lokahe)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.lokahe/io.github.lokahe.debugkit)](https://central.sonatype.com/namespace/io.github.lokahe)\
+![Android](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white)
+![Kotlin](https://img.shields.io/badge/Kotlin-%237F52FF.svg?logo=kotlin&logoColor=white)
 
 a debug took kit for android app development.
 
