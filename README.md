@@ -10,13 +10,30 @@ a debug took kit for android app development.
 
 usage
 -----
-```build.gradle```
-```
+```build.gradle```\
 dependencies {
-    ...
-    debugImplementation 'io.github.lokahe:debugkit:1.0.2'
-}
 ```
+    debugImplementation 'io.github.lokahe:debugkit:1.0.2'
+```
+local usage/debug
+-----
+local build (release)
+```
+./gradlew :library:assembleRelease
+```
+local build (debug)
+```
+./gradlew :library:assembleDebug
+```
+local publish
+```
+ ./gradlew publishToMavenCentral
+```
+local publish (debug)
+```
+./gradlew publishToMavenLocal
+```
+
 tools
 -----
 ViewHierarchyUtils
