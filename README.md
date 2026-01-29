@@ -13,7 +13,7 @@ usage
 ```build.gradle```\
 dependencies {
 ```
-    debugImplementation 'io.github.lokahe:debugkit:1.0.2'
+    debugImplementation 'io.github.lokahe:debugkit:1.0.3'
 ```
 local usage/debug
 -----
@@ -36,13 +36,38 @@ local publish (debug)
 
 tools
 -----
-ViewHierarchyUtils
+### ReflectUtils
+base on [AndroidHiddenApiBypass](https://github.com/LSPosed/AndroidHiddenApiBypass/tree/main)
+- set private / static final field
+```agsl
+... ReflectUtils ... D  InputMethodService field: mStylusHwSessionsTimeout long private 10000 
+... ReflectUtils ... D  InputMethodService field: mStylusHwSessionsTimeout long private 9999 
+... ReflectUtils ... D  InputMethodService field: DEBUG boolean static final false 
+... ReflectUtils ... D  InputMethodService field: DEBUG boolean static final true 
+```
+- invoke private method
+```
+... HiddenApiBypass ... D  invoke updateEditorToolTypeInternal with [2]
+... MyInputMethodService ... D  onUpdateEditorToolType 2
+```
+- log members
+```agsl
+... ReflectUtils ... jp.co.omronsoft.iwnnime.ml           D  InputMethodService field: mActionClickListener                      OnClickListener                    final                android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda4@872ffb6                                                                                                                                                                                                                                                                                                                  
+... ReflectUtils ... jp.co.omronsoft.iwnnime.ml           D  InputMethodService field: mBackCallbackRegistered                   boolean                            private              true 
+    ...
+... ReflectUtils ... D  InputMethodService constructor: android.inputmethodservice.InputMethodService         InputMethodService                public                                                                                                                                                                                                                                                                                         
+... ReflectUtils ... D  InputMethodService method: dispatchOnCurrentInputMethodSubtypeChanged            void                              private             class android.view.inputmethod.InputMethodSubtype                                                                                  
+... ReflectUtils ... D  InputMethodService method: dispatchOnShowInputRequested                          boolean                           private             int, boolean   
+    ...
+```
+
+### ViewHierarchyUtils
 - log view hierarchy
 ```
-2026-01-21 12:53:06.979  4760-4760  ViewHierarchyUtils      com.android.example         D  [2]					x:0,y:48,w:1600,h:2512			visible		enable	unclickable	lp.w/h:MATCH_PARENT/MATCH_PARENT	resId:(-1)													com.android.internal.policy.DecorView@124879460
-2026-01-21 12:53:06.980  4760-4760  ViewHierarchyUtils      com.android.example         D  0[2]				x:0,y:48,w:1600,h:2512			visible		enable	unclickable	lp.w/h:MATCH_PARENT/MATCH_PARENT	resId:(-1)													android.widget.LinearLayout@241642701
-2026-01-21 12:53:06.980  4760-4760  ViewHierarchyUtils      com.android.example         D  00[0]				x:0,y:48,w:0,h:0				gone		enable	unclickable	lp.w/h:MATCH_PARENT/WRAP_CONTENT	resId:action_mode_bar_stub(16908777)						android.view.ViewStub@86161794
-2026-01-21 12:53:06.981  4760-4760  ViewHierarchyUtils      com.android.example         D  01[2]				x:0,y:48,w:1600,h:2512			visible		enable	unclickable	lp.w/h:MATCH_PARENT/MATCH_PARENT	resId:content(16908290)										android.widget.FrameLayout@14338195
-2026-01-21 12:53:06.981  4760-4760  ViewHierarchyUtils      com.android.example         D  010[2]				x:0,y:48,w:1600,h:2512			visible		enable	unclickable	lp.w/h:MATCH_PARENT/MATCH_PARENT	resId:parentPanel(16909418)									android.widget.LinearLayout@183918800
+... ViewHierarchyUtils ... D  [2]					x:0,y:48,w:1600,h:2512			visible		enable	unclickable	lp.w/h:MATCH_PARENT/MATCH_PARENT	resId:(-1)													com.android.internal.policy.DecorView@124879460
+... ViewHierarchyUtils ... D  0[2]				x:0,y:48,w:1600,h:2512			visible		enable	unclickable	lp.w/h:MATCH_PARENT/MATCH_PARENT	resId:(-1)													android.widget.LinearLayout@241642701
+... ViewHierarchyUtils ... D  00[0]				x:0,y:48,w:0,h:0				gone		enable	unclickable	lp.w/h:MATCH_PARENT/WRAP_CONTENT	resId:action_mode_bar_stub(16908777)						android.view.ViewStub@86161794
+... ViewHierarchyUtils ... D  01[2]				x:0,y:48,w:1600,h:2512			visible		enable	unclickable	lp.w/h:MATCH_PARENT/MATCH_PARENT	resId:content(16908290)										android.widget.FrameLayout@14338195
+... ViewHierarchyUtils ... D  010[2]				x:0,y:48,w:1600,h:2512			visible		enable	unclickable	lp.w/h:MATCH_PARENT/MATCH_PARENT	resId:parentPanel(16909418)									android.widget.LinearLayout@183918800
 ...
 ```
