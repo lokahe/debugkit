@@ -61,9 +61,6 @@ private fun View.layoutParamsWidthStr(): String = layoutParams?.let {
     }
 } ?: ""
 
-private fun String.fixInTab(numOfTab: Int): String =
-    this + "\t".repeat(1.coerceAtLeast(numOfTab - length / 4))
-
 class ViewHierarchyUtils {
     companion object {
         private val TAG = ViewHierarchyUtils::class.java.simpleName

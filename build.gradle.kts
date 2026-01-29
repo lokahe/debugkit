@@ -14,5 +14,5 @@ buildscript {
 }
 plugins {
     // Check for the latest version in 2026
-    id("com.vanniktech.maven.publish") version "0.35.0" apply false
+    id("com.vanniktech.maven.publish") version "0.36.0" apply false
 }
