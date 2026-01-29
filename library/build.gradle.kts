@@ -88,7 +88,7 @@ abstract class ClassVisitorFactory : AsmClassVisitorFactory<InstrumentationParam
     }
 }
 
-version = "1.0.2"
+version = "1.0.3"
 // Plugin configuration
 mavenPublishing {
     // Define coordinates
