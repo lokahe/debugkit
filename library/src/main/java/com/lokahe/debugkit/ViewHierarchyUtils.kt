@@ -1,7 +1,6 @@
 package com.lokahe.debugkit
 
 import android.graphics.Rect
-import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.INVISIBLE
@@ -14,15 +13,19 @@ import androidx.core.view.isVisible
 
 val INDEX = (('0'..'9') + ('a'..'z') + ('A'..'Z')).toList()
 
+val View.hierarchyId: String
+    get() =
+        if (parent is View) {
+            (parent as View).hierarchyId + INDEX[(parent as ViewGroup).indexOfChild(this)]
+        } else ""
+
 private fun View.childCount(): Int = if (this is ViewGroup) childCount else 0
-private fun View.getRect(): Rect =
+
+private fun View.getRectStr(): String =
     intArrayOf(0, 0).let {
         getLocationOnScreen(it)
         Rect(it[0], it[1], width, height)
-    }
-
-private fun View.getRectStr(): String =
-    getRect().let { rect ->
+    }.let { rect ->
         "x:${rect.left},y:${rect.top},w:${rect.right},h:${rect.bottom}"
     }
 
@@ -64,57 +67,68 @@ private fun View.layoutParamsWidthStr(): String = layoutParams?.let {
 class ViewHierarchyUtils {
     companion object {
         private val TAG = ViewHierarchyUtils::class.java.simpleName
-        private val TABS = arrayOf(5, 8, 3, 2, 3, 9, 15)
+        private val COLS_LEN = 10
 
         @JvmStatic
         @JvmOverloads
         fun readViewInfo(
             view: View?,
             prefix: String = "",
-            divider: String = "",
-            tabs: Array<Int> = TABS
+            cols: MutableList<MutableList<String>> = MutableList(COLS_LEN) { mutableListOf() }
         ): String =
             view?.let { v ->
-                "$prefix[${v.childCount()}]".fixInTab(tabs[0]) +
-                        "${divider}${v.getRectStr()}".fixInTab(tabs[1]) +
-                        "${divider}${v.visibilityStr()}".fixInTab(tabs[2]) +
-                        "${divider}${v.enableStr()}".fixInTab(tabs[3]) +
-                        "${divider}${v.clickableStr()}".fixInTab(tabs[4]) +
-                        "${divider}lp.w/h:${v.layoutParamsWidthStr()}/${v.layoutParamsHeightStr()}".fixInTab(
-                            tabs[5]
-                        ) +
-                        "${divider}resId:${v.getResName()}(${v.id})".fixInTab(tabs[6]) +
-                        "${divider}${v.javaClass.getName()}@${v.hashCode()}"
+                cols[0].add("${prefix.spaceIfNoEmpty()}${view.hierarchyId}")
+                cols[1].add("[${v.childCount()}]")
+                cols[2].add(v.getRectStr())
+                cols[3].add(v.visibilityStr())
+                cols[4].add(v.enableStr())
+                cols[5].add(v.clickableStr())
+                cols[6].add("${v.layoutParamsWidthStr()}/${v.layoutParamsHeightStr()}")
+                cols[7].add(v.getResName() + "(" + v.id + ")")
+                cols[8].add(v.javaClass.getName() + "@" + v.hashCode())
+                cols[9].add(v.contentStr())
+                return cols.joinToString(" ")
             } ?: "$prefix[null]"
 
         @JvmStatic
         @JvmOverloads
         fun logViewInfo(
             view: View?,
-            tag: String = TAG,
-            prefix: String = "",
-            divider: String = "",
-            tabs: Array<Int> = TABS
+            tag: String? = null,
+            prefix: String = ""
         ) {
-            Log.d(tag, readViewInfo(view, prefix, divider, tabs))
+            (MutableList(COLS_LEN) { mutableListOf<String>() }).let {
+                readViewInfo(view, prefix, it)
+                logD(tag ?: TAG, { prefix }, *it.toTypedArray())
+            }
         }
 
         @JvmStatic
         @JvmOverloads
         fun logParents(
             view: View?,
-            tag: String = TAG,
-            prefix: String = "",
-            divider: String = "",
-            tabs: Array<Int> = TABS
+            tag: String? = null,
+            prefix: String = ""
+        ) {
+            MutableList(COLS_LEN) { mutableListOf<String>() }.let {
+                logParentsRecursive(view, it, tag, prefix)
+                logD(tag ?: TAG, { "" }, *it.toTypedArray())
+            }
+        }
+
+        private fun logParentsRecursive(
+            view: View?,
+            cols: MutableList<MutableList<String>> = MutableList(COLS_LEN) { mutableListOf() },
+            tag: String? = null,
+            prefix: String = ""
         ) {
             view?.let { v ->
                 v.parent?.let { parent ->
                     if (parent is View) {
-                        logParents(parent, tag, "$prefix↖", divider, tabs)
+                        logParentsRecursive(parent, cols, tag, prefix)
                     }
                 }
-                logViewInfo(v, tag, prefix, divider, tabs)
+                readViewInfo(v, prefix, cols)
             }
         }
 
@@ -124,26 +138,44 @@ class ViewHierarchyUtils {
             view: View?,
             hasSize: Boolean = false,
             visible: Boolean = false,
-            tag: String = TAG,
-            prefix: String = "",
-            divider: String = "",
-            tabs: Array<Int> = TABS
+            tag: String? = null,
+            prefix: String = ""
+        ) {
+            MutableList(COLS_LEN) { mutableListOf<String>() }.let { cols ->
+                readSubViewRecursive(
+                    view,
+                    cols,
+                    hasSize,
+                    visible,
+                    tag,
+                    prefix
+                )
+                logD(tag ?: TAG, { "" }, *cols.toTypedArray())
+            }
+        }
+
+        internal fun readSubViewRecursive(
+            view: View?,
+            cols: MutableList<MutableList<String>> = MutableList(COLS_LEN) { mutableListOf() },
+            hasSize: Boolean = false,
+            visible: Boolean = false,
+            tag: String? = null,
+            prefix: String = ""
         ) {
             view?.let { v ->
-                if ((!hasSize || !v.getRect().isEmpty) && (!visible || v.isVisible)) {
-                    logViewInfo(v, tag, prefix, divider, tabs)
+                if ((!hasSize || !v.hasSize) && (!visible || v.isVisible)) {
+                    readViewInfo(v, prefix, cols)
                 }
                 if (v is ViewGroup) {
                     for (i in 0..v.childCount()) {
                         val subView = v.getChildAt(i)
-                        logAllSubViews(
+                        readSubViewRecursive(
                             subView,
+                            cols,
                             hasSize,
                             visible,
                             tag,
-                            prefix + INDEX[i % INDEX.size],
-                            divider,
-                            tabs
+                            prefix
                         )
                     }
                 }
