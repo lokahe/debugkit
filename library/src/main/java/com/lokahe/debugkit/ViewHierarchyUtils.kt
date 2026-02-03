@@ -14,12 +14,20 @@ import androidx.core.view.isVisible
 val INDEX = (('0'..'9') + ('a'..'z') + ('A'..'Z')).toList()
 
 val View.hierarchyId: String
-    get() =
-        if (parent is View) {
-            (parent as View).hierarchyId + INDEX[(parent as ViewGroup).indexOfChild(this)]
-        } else ""
+    get() = if (parent is View) {
+        (parent as View).hierarchyId + INDEX[(parent as ViewGroup).indexOfChild(this)]
+    } else ""
 
-private fun View.childCount(): Int = if (this is ViewGroup) childCount else 0
+internal fun View.childCount(): Int = if (this is ViewGroup) childCount else 0
+
+internal fun View.getResName(): String =
+    if (id != 0 && id != -1)
+        try {
+            resources.getResourceEntryName(id)
+        } catch (e: Exception) {
+            "($id)"
+        }
+    else "($id)"
 
 private fun View.getRectStr(): String =
     intArrayOf(0, 0).let {
@@ -28,15 +36,6 @@ private fun View.getRectStr(): String =
     }.let { rect ->
         "x:${rect.left},y:${rect.top},w:${rect.right},h:${rect.bottom}"
     }
-
-private fun View.getResName(): String =
-    if (id != 0 && id != -1)
-        try {
-            resources.getResourceEntryName(id)
-        } catch (e: Exception) {
-            ""
-        }
-    else ""
 
 private fun View.visibilityStr(): String =
     when (visibility) {
@@ -48,7 +47,7 @@ private fun View.visibilityStr(): String =
 
 private fun View.enableStr(): String = if (isEnabled) "enable" else "disable"
 private fun View.clickableStr(): String = if (isClickable) "clickable" else "unclickable"
-private fun View.layoutParamsHeightStr(): String = layoutParams?.let {
+private fun View.layoutParamsHeightStr(): String = this@layoutParamsHeightStr.layoutParams?.let {
     when (it.height) {
         MATCH_PARENT -> "MATCH_PARENT"
         WRAP_CONTENT -> "WRAP_CONTENT"
@@ -56,7 +55,7 @@ private fun View.layoutParamsHeightStr(): String = layoutParams?.let {
     }
 } ?: ""
 
-private fun View.layoutParamsWidthStr(): String = layoutParams?.let {
+private fun View.layoutParamsWidthStr(): String = this@layoutParamsWidthStr.layoutParams?.let {
     when (it.width) {
         MATCH_PARENT -> "MATCH_PARENT"
         WRAP_CONTENT -> "WRAP_CONTENT"
@@ -84,7 +83,7 @@ class ViewHierarchyUtils {
                 cols[4].add(v.enableStr())
                 cols[5].add(v.clickableStr())
                 cols[6].add("${v.layoutParamsWidthStr()}/${v.layoutParamsHeightStr()}")
-                cols[7].add(v.getResName() + "(" + v.id + ")")
+                cols[7].add(v.getResName())
                 cols[8].add(v.javaClass.getName() + "@" + v.hashCode())
                 cols[9].add(v.contentStr())
                 return cols.joinToString(" ")

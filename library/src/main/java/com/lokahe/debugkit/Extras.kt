@@ -1,11 +1,17 @@
 package com.lokahe.debugkit
 
+import android.content.Context
 import android.graphics.Insets
 import android.graphics.Point
+import android.graphics.PointF
 import android.graphics.Rect
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import java.io.Serializable
 
 internal fun String.fixInTab(numOfTab: Int): String =
@@ -14,7 +20,7 @@ internal fun String.fixInTab(numOfTab: Int): String =
 internal fun String.fixInLen(len: Int): String =
     this + " ".repeat(1.coerceAtLeast(len - length + 1))
 
-fun String.spaceIfNoEmpty(): String {
+internal fun String.spaceIfNoEmpty(): String {
     return if (isNotEmpty() && !endsWith(" ")) {
         "$this "
     } else this
@@ -79,18 +85,47 @@ internal fun View.contentStr(maxLen: Int = 30): String =
             -> ""
     }
 
-fun Rect.contain(point: Point): Boolean =
+internal fun not0(a: Int, b: Int): Int = if (b != 0) b else a
+
+internal fun Rect.contain(point: Point): Boolean =
     contains(point.x, point.y)
 
-val View.hasSize: Boolean
+internal fun Rect.offset(pointF: PointF?): Rect {
+    pointF?.let { offset(it.x.toInt(), it.y.toInt()) }
+    return this
+}
+
+internal val View.hasSize: Boolean
     get() = width > 0 && height > 0
 
-val View.seeable: Boolean
+internal val View.seeable: Boolean
     get() = visibility == View.VISIBLE && hasSize
 
-fun Insets.update(left: Int, top: Int, right: Int, bottom: Int) {
+internal fun Point.set(point: Point) {
+    set(point.x, point.y)
+}
+
+internal fun Point.add(x: Int, y: Int) {
+    this.x += x
+    this.y += y
+}
+
+internal fun PointF.add(x: Float, y: Float) {
+    this.x += x
+    this.y += y
+}
+
+internal fun Insets.update(left: Int, top: Int, right: Int, bottom: Int) {
     this.left = left
     this.top = top
     this.right = right
     this.bottom = bottom
+}
+
+@ColorInt
+internal fun Context.getThemeColor(@AttrRes attribute: Int): Int {
+    val typedValue = TypedValue()
+    theme.resolveAttribute(attribute, typedValue, true)
+    val colorRes = typedValue.run { if (resourceId != 0) resourceId else data }
+    return ContextCompat.getColor(this, colorRes)
 }
