@@ -207,7 +207,7 @@ class ViewView(
         movedMap.clear()
     }
 
-    val friction = 0.1f
+    val friction = 0.01f
     val delay = 10L
     suspend fun slowdownJob() {
         withContext(Dispatchers.Main) {
@@ -233,8 +233,8 @@ class ViewView(
                         invalidate()
                         sqrt(pair.second.x * pair.second.x + pair.second.y * pair.second.y).let { spd ->
                             Pair(
-                                friction * abs(pair.second.x) / spd,
-                                friction * abs(pair.second.y) / spd
+                                friction * abs(pair.second.x) / spd * spd,
+                                friction * abs(pair.second.y) / spd * spd
                             ).let { (dx, dy) ->
                                 if (pair.second.x > 0)
                                     pair.second.x = (pair.second.x - dx).coerceAtLeast(0f)

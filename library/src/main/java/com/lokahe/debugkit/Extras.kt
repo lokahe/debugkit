@@ -86,6 +86,7 @@ internal fun View.contentStr(maxLen: Int = 30): String =
     }
 
 internal fun not0(a: Int, b: Int): Int = if (b != 0) b else a
+internal fun not0(a: Float, b: Float): Float = if (b != 0f) b else a
 
 internal fun Rect.contain(point: Point): Boolean =
     contains(point.x, point.y)

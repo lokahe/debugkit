@@ -1,6 +1,7 @@
 package com.lokahe.debugkit.widget
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Point
 import android.graphics.Rect
@@ -14,7 +15,8 @@ import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 import android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
 import android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import android.widget.ImageButton
+import androidx.core.graphics.drawable.toDrawable
 import com.lokahe.debugkit.Fivetuple
 import com.lokahe.debugkit.R
 import kotlinx.coroutines.Dispatchers
@@ -27,9 +29,10 @@ class FloatButton(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
     val onClick: (Boolean) -> Unit
-) : FloatingActionButton(context, attrs, defStyleAttr) {
+) : ImageButton(context, attrs, defStyleAttr) {
     init {
         setImageResource(R.drawable.logo)
+        background = Color.TRANSPARENT.toDrawable()
     }
 
     private var switch = false
@@ -102,6 +105,7 @@ class FloatButton(
                     switch = !switch
                     onClick(switch)
                     setImageResource(if (switch) R.drawable.logo_on else R.drawable.logo)
+//                    context.setSystemGestureExclusionRects
                 }
             }
         }
@@ -126,4 +130,28 @@ class FloatButton(
             }
         }
     }
+
+//    suspend fun sideJob() {
+//        withContext(Dispatchers.Main) {
+//            while (true) {
+//                windowManager.currentWindowMetrics.bounds.let { bounds ->
+//                    not0(
+//                        (layoutParams.x - height / 2).coerceAtMost(0) * 0.01f,
+//                        (layoutParams.x - (bounds.width() - height * 3 / 2)).coerceAtLeast(0) * 0.01f
+//                    ).let { dx ->
+//                        if (layoutParams.x == 0 || x.toInt() == bounds.width() - height / 2) {
+//                            setImageResource(if (switch) R.drawable.logo_left_on else R.drawable.logo_left)
+//                            if (layoutParams.x == bounds.width() - height / 2)
+//                                scaleX = -1f
+//                        } else if (dx != 0f && !isInTouchMode) {
+//                            layoutParams.x = (layoutParams.x + dx).coerceIn(0f, (bounds.width() - height / 2).toFloat()).toInt()
+//                        } else {
+//                            setImageResource(if (switch) R.drawable.logo_on else R.drawable.logo)
+//                        }
+//                    }
+//                }
+//                delay(10)
+//            }
+//        }
+//    }
 }
