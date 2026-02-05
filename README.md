@@ -13,7 +13,7 @@ usage
 ```build.gradle```\
 dependencies {
 ```
-    debugImplementation 'io.github.lokahe:debugkit:1.0.3'
+    debugImplementation 'io.github.lokahe:debugkit:1.0.4'
 ```
 local usage/debug
 -----
