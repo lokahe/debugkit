@@ -1,5 +1,5 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-include(":stub", ":library")
+include(":stub", ":library", ":javapp")
 pluginManagement {
     repositories {
         gradlePluginPortal()
