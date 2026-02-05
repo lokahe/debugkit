@@ -28,6 +28,7 @@ import com.lokahe.debugkit.add
 import com.lokahe.debugkit.getRect
 import com.lokahe.debugkit.getResName
 import com.lokahe.debugkit.hierarchyId
+import com.lokahe.debugkit.multiply
 import com.lokahe.debugkit.not0
 import com.lokahe.debugkit.offset
 import com.lokahe.debugkit.seeable
@@ -212,7 +213,7 @@ class ViewView(
     suspend fun slowdownJob() {
         withContext(Dispatchers.Main) {
             while (true) {
-                movedMap.forEach { v, pair ->
+                movedMap.forEach { (v, pair) ->
                     if (pair.second.x != 0f || pair.second.y != 0f) {
                         pair.first.add(pair.second.x * delay, pair.second.y * delay)
                         movedRect(v).let { r ->
@@ -231,21 +232,7 @@ class ViewView(
                             }
                         }
                         invalidate()
-                        sqrt(pair.second.x * pair.second.x + pair.second.y * pair.second.y).let { spd ->
-                            Pair(
-                                friction * abs(pair.second.x) / spd * spd,
-                                friction * abs(pair.second.y) / spd * spd
-                            ).let { (dx, dy) ->
-                                if (pair.second.x > 0)
-                                    pair.second.x = (pair.second.x - dx).coerceAtLeast(0f)
-                                else
-                                    pair.second.x = (pair.second.x + dx).coerceAtMost(0f)
-                                if (pair.second.y > 0)
-                                    pair.second.y = (pair.second.y - dy).coerceAtLeast(0f)
-                                else
-                                    pair.second.y = (pair.second.y + dy).coerceAtMost(0f)
-                            }
-                        }
+                        pair.second.multiply(1 - friction, 1f / delay)
                     }
                 }
                 delay(delay)

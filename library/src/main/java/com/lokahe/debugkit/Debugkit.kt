@@ -100,6 +100,7 @@ class Debugkit private constructor(
         if (jobs == null) jobs = MainScope().launch {
             launch { fltBtn.transparentJob() }
             launch { vView.slowdownJob() }
+            launch { fltBtn.sideJob() }
         }
         windowManager.addView(fltBtn, fltBtn.layoutParams)
     }

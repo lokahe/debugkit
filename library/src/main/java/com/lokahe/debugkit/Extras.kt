@@ -13,6 +13,7 @@ import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import java.io.Serializable
+import kotlin.math.sqrt
 
 internal fun String.fixInTab(numOfTab: Int): String =
     this + "\t".repeat(1.coerceAtLeast(numOfTab - length / 4))
@@ -57,18 +58,27 @@ data class Quadruple<out A, out B, out C, out D>(
     public override fun toString(): String = "($first, $second, $third, $fourth)"
 }
 
-data class Fivetuple<out A, out B, out C, out D>(
+data class Fivetuple<out A, out B, out C, out D, out E>(
     val first: A,
     val second: B,
     val third: C,
     val fourth: D,
-    val fifth: D
+    val fifth: E
 ) : Serializable {
     /**
      * Returns string representation of the [Pair] including its [first] and [second] values.
      */
     public override fun toString(): String = "($first, $second, $third, $fourth, $fifth)"
 }
+
+data class Sixuple<out A, out B, out C, out D, out E, out F>(
+    val first: A,
+    val second: B,
+    val third: C,
+    val fourth: D,
+    val fifth: E,
+    val sixth: F
+) : Serializable
 
 internal fun View.getRect(): Rect =
     intArrayOf(0, 0).let {
@@ -114,6 +124,15 @@ internal fun Point.add(x: Int, y: Int) {
 internal fun PointF.add(x: Float, y: Float) {
     this.x += x
     this.y += y
+}
+
+internal fun PointF.diagonal(): Float = sqrt(x * x + y * y)
+internal fun PointF.diagonalSquare(): Float = x * x + y * y
+internal fun PointF.multiply(f: Float, as0: Float = 0f) {
+    x *= f; y *= f
+    if (diagonal() <= as0) {
+        x = 0f; y = 0f
+    }
 }
 
 internal fun Insets.update(left: Int, top: Int, right: Int, bottom: Int) {
