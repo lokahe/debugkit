@@ -61,9 +61,11 @@ base on [AndroidHiddenApiBypass](https://github.com/LSPosed/AndroidHiddenApiBypa
     ...
 ```
 
-### DebugKit ```Debugkit.getInstance(this).setDecorView(getDecorView())```
-・show a floating button on screen to toggle on/off of the view of the DecorView's hierarchy for showing information to debug\
-・move the views for view the hierarchy directly\
+### DebugKit 
+```Debugkit.getInstance(this).setDecorView(getDecorView())```\
+・show a floating button on screen to toggle on/off of the Rects of the DecorView's hierarchy for showing information to debug\
+・tap the Rects to log view and hierarchy info
+・move the Rects for view the hierarchy directly\
 <img src="./screenshot01.png" width="160" /><img src="./screenshot02.png" width="160" /><img src="./screenshot03.png" width="160" />
 
 ### ViewHierarchyUtils
