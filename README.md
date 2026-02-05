@@ -61,13 +61,18 @@ base on [AndroidHiddenApiBypass](https://github.com/LSPosed/AndroidHiddenApiBypa
     ...
 ```
 
+### DebugKit ```Debugkit.getInstance(this).setDecorView(getDecorView())```
+・show a floating button on screen to toggle on/off of the view of the DecorView's hierarchy for showing information to debug
+・move the views for view the hierarchy directly
+<img src="./screenshot01.png" width="160" /><img src="./screenshot02.png" width="160" /><img src="./screenshot03.png" width="160" />
+
 ### ViewHierarchyUtils
-- log view hierarchy
+- log view hierarchy ```ViewHierarchyUtils.logAllSubViews(getDecorView())```
 ```
-... ViewHierarchyUtils ... D  [2]					x:0,y:48,w:1600,h:2512			visible		enable	unclickable	lp.w/h:MATCH_PARENT/MATCH_PARENT	resId:(-1)													com.android.internal.policy.DecorView@124879460
-... ViewHierarchyUtils ... D  0[2]				x:0,y:48,w:1600,h:2512			visible		enable	unclickable	lp.w/h:MATCH_PARENT/MATCH_PARENT	resId:(-1)													android.widget.LinearLayout@241642701
-... ViewHierarchyUtils ... D  00[0]				x:0,y:48,w:0,h:0				gone		enable	unclickable	lp.w/h:MATCH_PARENT/WRAP_CONTENT	resId:action_mode_bar_stub(16908777)						android.view.ViewStub@86161794
-... ViewHierarchyUtils ... D  01[2]				x:0,y:48,w:1600,h:2512			visible		enable	unclickable	lp.w/h:MATCH_PARENT/MATCH_PARENT	resId:content(16908290)										android.widget.FrameLayout@14338195
-... ViewHierarchyUtils ... D  010[2]				x:0,y:48,w:1600,h:2512			visible		enable	unclickable	lp.w/h:MATCH_PARENT/MATCH_PARENT	resId:parentPanel(16909418)									android.widget.LinearLayout@183918800
+... ViewHierarchyUtils ... D             [2]  x:0,y:152,w:1080,h:2272  visible   enable unclickable MATCH_PARENT/MATCH_PARENT (-1)                                   com.android.internal.policy.DecorView@55831969 
+... ViewHierarchyUtils ... D 0           [2]  x:0,y:152,w:1080,h:2272  visible   enable unclickable MATCH_PARENT/MATCH_PARENT (-1)                                   android.widget.LinearLayout@145320902          
+... ViewHierarchyUtils ... D 00          [0]  x:0,y:152,w:0,h:0        gone      enable unclickable MATCH_PARENT/WRAP_CONTENT action_mode_bar_stub                   android.view.ViewStub@1927047                  
+... ViewHierarchyUtils ... D 01          [2]  x:0,y:152,w:1080,h:2272  visible   enable unclickable MATCH_PARENT/MATCH_PARENT content                                android.widget.FrameLayout@192571060           
+... ViewHierarchyUtils ... D 010         [2]  x:0,y:152,w:1080,h:2272  visible   enable unclickable MATCH_PARENT/MATCH_PARENT parentPanel                            android.widget.LinearLayout@27312861           
     ...
 ```
